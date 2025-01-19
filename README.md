@@ -14,7 +14,7 @@ https://github.com/user-attachments/assets/b4941a86-f8d1-47b0-86ec-1475918a9966
 
 ## Installation
 
-1. **Clone** this repository or [**download the zip file**](./multi-search.zip).
+1. **Clone** this repository or [**download the zip file**](https://raw.githubusercontent.com/lawrencecchen/multi-search-extension/main/multi-search.zip).
 2. Open Chrome and go to `chrome://extensions`.
 3. Enable **Developer mode** (toggle in the top-right corner).
 4. Click **"Load unpacked"** and select the folder containing these files.
