@@ -20,14 +20,14 @@ chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   if (disposition === "newForegroundTab") {
     chrome.tabs.create({ url: chatgptUrl });
     chrome.tabs.create({ url: perplexUrl });
-    chrome.tabs.create({ url: googleUrl });
     chrome.tabs.create({ url: ddgRedirectUrl });
+    chrome.tabs.create({ url: googleUrl });
   } else {
     // Get current tab
     chrome.tabs.update({ url: chatgptUrl });
     chrome.tabs.create({ url: perplexUrl });
-    chrome.tabs.create({ url: googleUrl });
     chrome.tabs.create({ url: ddgRedirectUrl });
+    chrome.tabs.create({ url: googleUrl });
   }
 });
 
