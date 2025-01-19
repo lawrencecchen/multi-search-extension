@@ -10,6 +10,8 @@ This Chrome extension intercepts your default searches in the Omnibox (once set 
 
 in that order, immediately to the right of your current tab.
 
+![Demo Video](https://github.com/user-attachments/assets/a7212e3d-7e8a-4371-9eff-70f0da409e32)
+
 ## Installation
 
 1. **Clone** this repository or [**download the zip file**](./multi-search.zip).
