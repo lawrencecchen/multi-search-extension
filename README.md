@@ -8,7 +8,7 @@ This Chrome extension intercepts your default searches in the Omnibox (once set 
 4. Google
 5. DuckDuckGo feeling lucky redirect
 
-in that order, immediately to the right of your current tab.
+immediately to the right of your current tab.
 
 <video width="100%" controls>
   <source src="https://uwirpkasyoaovnbonjzj.supabase.co/storage/v1/object/public/action_demos/multi-search-demo.mov?t=2025-01-19T10%3A56%3A30.928Z" type="video/quicktime">
