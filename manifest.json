@@ -9,19 +9,12 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "chrome_settings_overrides": {
-    "search_provider": {
-      "name": "MultiSearch",
-      "keyword": "multi",
-      "search_url": "chrome-extension://__MSG_@@extension_id__/search.html?q=%s",
-      "favicon_url": "icons/icon16.png",
-      "encoding": "UTF-8",
-      "is_default": true
-    }
-  },
   "permissions": [
     "tabs"
   ],
+  "omnibox": {
+    "keyword": "m"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -31,7 +24,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "search.html"
+        "search.html",
+        "search.js"
       ],
       "matches": [
         "<all_urls>"

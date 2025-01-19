@@ -3,8 +3,8 @@
 This Chrome extension intercepts your default searches in the Omnibox (once set as default) and opens three tabs:
 
 1. ChatGPT
-2. Google
-3. Perplexity
+2. Perplexity
+3. Google
 
 in that order, immediately to the right of your current tab.
 
