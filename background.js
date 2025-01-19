@@ -8,62 +8,70 @@
 // Store tab IDs for each search group
 let searchGroups = new Map();
 
+// Retrieve config from storage or use defaults
+async function getUserSearchConfig(encodedQuery) {
+  const response = await fetch(chrome.runtime.getURL("config.json"));
+  const defaults = await response.json(); // read default config from file
+
+  // Try loading user config from storage
+  const stored = await chrome.storage.sync.get(["searchConfig"]);
+  const merged = Object.assign({}, defaults, stored.searchConfig || {});
+  // For each engine, substitute the encoded query into its URL
+  merged.searchEngines = merged.searchEngines.map((engine) => {
+    return {
+      ...engine,
+      url: engine.url.replace(/\${encodedQuery}/g, encodedQuery),
+    };
+  });
+  return merged;
+}
+
 // Handle omnibox input
 chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
   const encodedQuery = encodeURIComponent(text);
 
-  // Construct the desired URLs
-  const chatgptUrl = `https://chatgpt.com/?q=${encodedQuery}&hints=search&ref=ext`;
-  const googleUrl = `https://www.google.com/search?q=${encodedQuery}`;
-  const perplexUrl = `https://www.perplexity.ai/search/new?q=${encodedQuery}`;
-  const ddgRedirectUrl = `https://duckduckgo.com/?q=%5C${encodedQuery}`;
-  const claudeUrl = `https://claude.ai/new?q=${encodedQuery}`;
-
+  const config = await getUserSearchConfig(encodedQuery);
   let tabIds = [];
-  let chatGptTabId;
+  let groupId = Date.now().toString();
 
-  if (disposition === "newForegroundTab") {
-    // Create all tabs rapidly without waiting
-    const tab1 = await chrome.tabs.create({
-      url: ddgRedirectUrl,
-      active: false,
-    });
-    const tab2 = await chrome.tabs.create({ url: chatgptUrl, active: false });
-    const tab3 = await chrome.tabs.create({ url: perplexUrl, active: false });
-    const tab4 = await chrome.tabs.create({ url: googleUrl, active: false });
-    const tab5 = await chrome.tabs.create({ url: claudeUrl, active: false });
+  // Create all tabs immediately in parallel
+  const tabPromises = config.searchEngines
+    .filter((engine) => engine.enabled)
+    .map((engine) =>
+      chrome.tabs.create({
+        url: engine.url,
+        active: false,
+      })
+    );
 
-    // Focus ChatGPT briefly to trigger loading
-    await chrome.tabs.update(tab2.id, { active: true });
+  // Wait for all tabs to be created
+  const tabs = await Promise.all(tabPromises);
+  tabIds = tabs.map((tab) => tab.id);
 
-    // Then switch to Google tab
-    await chrome.tabs.update(tab4.id, { active: true });
+  // Handle prewarming in sequence for tabs that need it
+  for (let i = 0; i < config.searchEngines.length; i++) {
+    const engine = config.searchEngines[i];
+    if (!engine.enabled) continue;
 
-    tabIds = [tab1.id, tab2.id, tab3.id, tab4.id, tab5.id];
-  } else {
-    // Update current tab and create others rapidly
-    const currentTab = await chrome.tabs.update({
-      url: ddgRedirectUrl,
-      active: false,
-    });
-    const tab2 = await chrome.tabs.create({ url: chatgptUrl, active: false });
-    const tab3 = await chrome.tabs.create({ url: perplexUrl, active: false });
-    const tab4 = await chrome.tabs.create({ url: googleUrl, active: false });
-    const tab5 = await chrome.tabs.create({ url: claudeUrl, active: false });
-
-    // Focus ChatGPT briefly to trigger loading
-    await chrome.tabs.update(tab2.id, { active: true });
-
-    // Then switch to Google tab
-    await chrome.tabs.update(tab4.id, { active: true });
-
-    tabIds = [currentTab.id, tab2.id, tab3.id, tab4.id, tab5.id];
+    if (engine.prewarm) {
+      await chrome.tabs.update(tabIds[i], { active: true });
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
   }
 
-  // Generate a unique group ID
-  const groupId = Date.now().toString();
-  searchGroups.set(groupId, new Set(tabIds));
+  // Focus the engine indicated as finalFocus
+  const finalEngine = config.searchEngines.find(
+    (e) => e.name === config.finalFocus
+  );
+  if (finalEngine) {
+    const finalIndex = config.searchEngines.indexOf(finalEngine);
+    if (finalIndex !== -1 && tabIds[finalIndex]) {
+      await chrome.tabs.update(tabIds[finalIndex], { active: true });
+    }
+  }
 
+  // Keep track of the search group
+  searchGroups.set(groupId, new Set(tabIds));
   // Store the group ID in each tab's data
   tabIds.forEach((tabId) => {
     chrome.storage.session.set({ [tabId.toString()]: groupId });

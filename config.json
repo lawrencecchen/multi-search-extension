@@ -1,0 +1,35 @@
+{
+  "searchEngines": [
+    {
+      "name": "DuckDuckGo",
+      "url": "https://duckduckgo.com/?q=%5C$${encodedQuery}",
+      "enabled": true,
+      "prewarm": false
+    },
+    {
+      "name": "ChatGPT",
+      "url": "https://chatgpt.com/?q=${encodedQuery}&hints=search&ref=ext",
+      "enabled": true,
+      "prewarm": true
+    },
+    {
+      "name": "Perplexity",
+      "url": "https://www.perplexity.ai/search/new?q=${encodedQuery}",
+      "enabled": true,
+      "prewarm": false
+    },
+    {
+      "name": "Google",
+      "url": "https://www.google.com/search?q=${encodedQuery}",
+      "enabled": true,
+      "prewarm": false
+    },
+    {
+      "name": "Claude",
+      "url": "https://claude.ai/new?q=${encodedQuery}",
+      "enabled": true,
+      "prewarm": false
+    }
+  ],
+  "finalFocus": "Google"
+}

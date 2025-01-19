@@ -27,7 +27,8 @@
     {
       "resources": [
         "search.html",
-        "search.js"
+        "search.js",
+        "config.json"
       ],
       "matches": [
         "<all_urls>"
