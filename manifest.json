@@ -20,7 +20,8 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_icon": "icons/icon16.png"
+    "default_icon": "icons/icon16.png",
+    "default_popup": "options.html"
   },
   "web_accessible_resources": [
     {

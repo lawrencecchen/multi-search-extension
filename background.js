@@ -72,7 +72,11 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   // Get the group ID for this tab
   const groupId = await chrome.storage.session.get(tabId.toString());
 
-  if (groupId[tabId.toString()]) {
+  // Check auto-close setting
+  const { autoCloseTabs } = await chrome.storage.sync.get(["autoCloseTabs"]);
+
+  // Default to true if setting is not explicitly set to false
+  if (autoCloseTabs !== false && groupId[tabId.toString()]) {
     const tabGroup = searchGroups.get(groupId[tabId.toString()]);
     if (tabGroup) {
       // Remove all other tabs in the group
