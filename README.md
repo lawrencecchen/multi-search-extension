@@ -1,6 +1,6 @@
-  # Multi-Search Extension
+# Multi-Search Extension
 
-This Chrome extension intercepts your default searches in the Omnibox (once set as default) and opens three tabs:
+This Chrome extension intercepts your default searches in the Omnibox (prefixed with `m`) and opens three tabs:
 
 1. ChatGPT
 2. Claude
@@ -10,10 +10,7 @@ This Chrome extension intercepts your default searches in the Omnibox (once set 
 
 immediately to the right of your current tab.
 
-
-
 https://github.com/user-attachments/assets/b4941a86-f8d1-47b0-86ec-1475918a9966
-
 
 ## Installation
 
