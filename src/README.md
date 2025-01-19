@@ -12,7 +12,7 @@ in that order, immediately to the right of your current tab.
 
 ## Installation
 
-1. **Clone** or **download** this folder to your computer.
+1. **Clone** this repository or [**download the zip file**](./multi-search.zip).
 2. Open Chrome and go to `chrome://extensions`.
 3. Enable **Developer mode** (toggle in the top-right corner).
 4. Click **"Load unpacked"** and select the folder containing these files.
