@@ -29,22 +29,41 @@ async function getUserSearchConfig(encodedQuery) {
 // Handle omnibox input
 chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
   const encodedQuery = encodeURIComponent(text);
-
   const config = await getUserSearchConfig(encodedQuery);
+
+  // Get current tab if we're replacing
+  let currentTab = null;
+  if (disposition === "currentTab") {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    currentTab = tab;
+  }
+
   let tabIds = [];
   let groupId = Date.now().toString();
 
-  // Create all tabs immediately in parallel
+  // Create or update tabs based on disposition
   const tabPromises = config.searchEngines
     .filter((engine) => engine.enabled)
-    .map((engine) =>
-      chrome.tabs.create({
-        url: engine.url,
-        active: false,
-      })
-    );
+    .map(async (engine, index) => {
+      if (index === 0 && disposition === "currentTab" && currentTab) {
+        // Update first tab in place if replacing
+        return chrome.tabs.update(currentTab.id, {
+          url: engine.url,
+          active: false,
+        });
+      } else {
+        // Create new tab for others
+        return chrome.tabs.create({
+          url: engine.url,
+          active: false,
+        });
+      }
+    });
 
-  // Wait for all tabs to be created
+  // Wait for all tabs to be created/updated
   const tabs = await Promise.all(tabPromises);
   tabIds = tabs.map((tab) => tab.id);
 
