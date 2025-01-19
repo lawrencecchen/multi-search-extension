@@ -17,6 +17,7 @@ chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
   const googleUrl = `https://www.google.com/search?q=${encodedQuery}`;
   const perplexUrl = `https://www.perplexity.ai/search/new?q=${encodedQuery}`;
   const ddgRedirectUrl = `https://duckduckgo.com/?q=%5C${encodedQuery}`;
+  const claudeUrl = `https://claude.ai/new?q=${encodedQuery}`;
 
   let tabIds = [];
   let chatGptTabId;
@@ -30,6 +31,7 @@ chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
     const tab2 = await chrome.tabs.create({ url: chatgptUrl, active: false });
     const tab3 = await chrome.tabs.create({ url: perplexUrl, active: false });
     const tab4 = await chrome.tabs.create({ url: googleUrl, active: false });
+    const tab5 = await chrome.tabs.create({ url: claudeUrl, active: false });
 
     // Focus ChatGPT briefly to trigger loading
     await chrome.tabs.update(tab2.id, { active: true });
@@ -37,7 +39,7 @@ chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
     // Then switch to Google tab
     await chrome.tabs.update(tab4.id, { active: true });
 
-    tabIds = [tab1.id, tab2.id, tab3.id, tab4.id];
+    tabIds = [tab1.id, tab2.id, tab3.id, tab4.id, tab5.id];
   } else {
     // Update current tab and create others rapidly
     const currentTab = await chrome.tabs.update({
@@ -47,6 +49,7 @@ chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
     const tab2 = await chrome.tabs.create({ url: chatgptUrl, active: false });
     const tab3 = await chrome.tabs.create({ url: perplexUrl, active: false });
     const tab4 = await chrome.tabs.create({ url: googleUrl, active: false });
+    const tab5 = await chrome.tabs.create({ url: claudeUrl, active: false });
 
     // Focus ChatGPT briefly to trigger loading
     await chrome.tabs.update(tab2.id, { active: true });
@@ -54,7 +57,7 @@ chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
     // Then switch to Google tab
     await chrome.tabs.update(tab4.id, { active: true });
 
-    tabIds = [currentTab.id, tab2.id, tab3.id, tab4.id];
+    tabIds = [currentTab.id, tab2.id, tab3.id, tab4.id, tab5.id];
   }
 
   // Generate a unique group ID
@@ -97,5 +100,6 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 
 // Optional: Set a default suggestion
 chrome.omnibox.setDefaultSuggestion({
-  description: "Search multiple engines: ChatGPT, Google, and Perplexity",
+  description:
+    "Search multiple engines: ChatGPT, Google, Perplexity, and Claude",
 });
