@@ -19,5 +19,5 @@ in that order, immediately to the right of your current tab.
 6. Click the **three dots** next to **"MultiSearch"** and choose **"Make default"**.
    - Chrome might show a prompt the first time you install.
 
-That's it! Now, whenever you type a query in the Omnibox (e.g. `whats $nvda stock`) and press Enter,
+That's it! Now, whenever you type a query in the Omnibox that's prefixed with `m` (e.g. `m $nvda stock`) and press Enter,
 the extension will open ChatGPT, Google, and Perplexity automatically in new tabs.
